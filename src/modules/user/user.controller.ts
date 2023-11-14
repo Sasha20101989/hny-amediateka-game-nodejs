@@ -28,7 +28,7 @@ export default class UserController extends Controller {
     this.logger.info('Register routes for UserController...');
 
     this.addRoute({ path: '/login',
-      method: HttpMethod.Get,
+      method: HttpMethod.Post,
       handler: this.checkAuthenticate,
       middlewares: [
         new ValidateDtoMiddleware(LoginUserDto)

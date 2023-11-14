@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: API для проекта «HNY AMEDIATEKA (механика)»
+  description: FHNY AMEDIATEKA — это.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+tags:
+  - name: users
+    description: Действия с пользователем
+
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Вход в закрытую часть приложения
+      description: Авторизовывает пользователя.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequest'
+      responses:
+        '200':
+          description: Успешная аутентификация. Возвращается информация о пользователе.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loggedUserRdo'
+        '400':
+          description: Ошибка запроса. Некорректные данные при аутентификации.
+        '401':
+          description: Ошибка аутентификации. Неверный пароль.
+
+components:
+  schemas:
+
+    user:
+      type: object
+      properties:
+        password:
+          type: string
+          description: Пароль пользователя.
+
+    loginRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          minLength: 6
+          maxLength: 12
+
+    loggedUserRdo:
+      type: object
+      properties:
+        id:
+          type: string
+        password:
+          type: string
+        createdAt:
+          type: string
+          format: date
+          description: Дата создания.
