@@ -8,5 +8,11 @@ export default class UserRdo {
   public password!: string;
 
   @Expose()
+  public hasPlayed!: boolean;
+
+  @Expose()
+  public giftsReceived!: number;
+
+  @Expose()
   public createdAt!: string ;
 }

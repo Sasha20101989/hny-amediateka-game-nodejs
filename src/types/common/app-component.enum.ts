@@ -6,4 +6,6 @@ export const AppComponent = {
   UserServiceInterface: Symbol.for('UserServiceInterface'),
   UserModel: Symbol.for('UserModel'),
   UserController: Symbol.for('UserController'),
+  GameServiceInterface: Symbol.for('GameServiceInterface'),
+  GameController: Symbol.for('GameController'),
 } as const;

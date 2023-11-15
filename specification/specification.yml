@@ -10,6 +10,8 @@ info:
 tags:
   - name: users
     description: Действия с пользователем
+  - name: game
+    description: Действия с игрой
 
 paths:
   /users/login:
@@ -37,6 +39,31 @@ paths:
         '401':
           description: Ошибка аутентификации. Неверный пароль.
 
+  /game/skip:
+    post:
+      tags:
+        - game
+      summary: Пропуск игры
+      description: Пропускает игру и выдает первый подарок.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequest'
+      responses:
+        '200':
+          description: Успешный пропуск игры. Выдает первый подарок или сообщение о том что подарок уже был выдан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameRdo'
+        '400':
+          description: Ошибка запроса. Некорректные данные при пропуске игры.
+        '401':
+          description: Ошибка аутентификации.
+
 components:
   schemas:
 
@@ -46,6 +73,16 @@ components:
         password:
           type: string
           description: Пароль пользователя.
+        hasPlayed:
+          type: boolean
+          description: Логическое значение, указывающее, участвовал ли пользователь в игре или нет.
+        giftsReceived:
+          type: number
+          description: Количество подарков, полученных пользователем.
+        createdAt:
+          type: string
+          format: date
+          description: Метка времени, указывающая дату и время создания учетной записи пользователя.
 
     loginRequest:
       type: object
@@ -62,7 +99,19 @@ components:
           type: string
         password:
           type: string
+        hasPlayed:
+          type: boolean
+        giftsReceived:
+          type: number
+          format: date
         createdAt:
           type: string
           format: date
-          description: Дата создания.
+
+    gameRdo:
+      type: object
+      properties:
+        message:
+          type: string
+        promoCode:
+          type: string
