@@ -16,8 +16,8 @@ import NoGameDto from '../game/dto/no-game.dto.js';
 import GameRdo from '../game/rdo/gameRdo.js';
 import { GameServiceInterface } from '../game/game-service.interface.js';
 import { UserServiceInterface } from '../user/user-service.interface.js';
-
-const TOTAL_GIFTS = 3;
+import GameRiddleDto from './dto/game-riddle.dto.js';
+import { TOTAL_GIFTS } from './game.const.js';
 
 @injectable()
 export default class GameController extends Controller {
@@ -35,6 +35,13 @@ export default class GameController extends Controller {
       handler: this.skipGame,
       middlewares: [
         new ValidateDtoMiddleware(NoGameDto)
+      ]
+    });
+    this.addRoute({ path: '/play-riddle',
+      method: HttpMethod.Post,
+      handler: this.playRiddle,
+      middlewares: [
+        new ValidateDtoMiddleware(GameRiddleDto)
       ]
     });
   }
@@ -61,8 +68,43 @@ export default class GameController extends Controller {
       const result = await this.gameService.receiveGift(user);
 
       this.ok(res, fillDTO(GameRdo, result));
+    }else if(user.giftsReceived == TOTAL_GIFTS && user.hasPlayed){
+      const result: GameRdo = { message: 'Вы уже получили все подарки' };
+
+      this.ok(res, fillDTO(GameRdo, result));
     }else{
       const result: GameRdo = { message: 'Вы уже получили 1 подарок, но можете пройти 2 и 3 ребус и получить еще подарки' };
+
+      this.ok(res, fillDTO(GameRdo, result));
+    }
+  }
+
+  public async playRiddle(
+    req: Request<UnknownRecord, UnknownRecord, GameRiddleDto>,
+    res: Response
+  ){
+    const { body } = req;
+
+    const user = await this.userService.verifyUser({...body});
+
+    if(!user){
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+
+    if(user.giftsReceived < TOTAL_GIFTS) {
+      if(!user.hasPlayed){
+        user.hasPlayed = true;
+      }
+
+      const result = await this.gameService.receiveGift(user);
+
+      this.ok(res, fillDTO(GameRdo, result));
+    }else{
+      const result: GameRdo = { message: 'Вы уже получили все подарки' };
 
       this.ok(res, fillDTO(GameRdo, result));
     }

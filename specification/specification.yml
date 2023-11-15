@@ -54,13 +54,38 @@ paths:
               $ref: '#/components/schemas/loginRequest'
       responses:
         '200':
-          description: Успешный пропуск игры. Выдает первый подарок или сообщение о том что подарок уже был выдан.
+          description: Успешный пропуск игры. Выдает первый подарок или сообщение о том что подарок уже был выдан или все подарки были выданы.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/gameRdo'
         '400':
-          description: Ошибка запроса. Некорректные данные при пропуске игры.
+          description: Ошибка запроса. Некорректные данные для пропуска игры.
+        '401':
+          description: Ошибка аутентификации.
+
+  /game/play-riddle:
+    post:
+      tags:
+        - game
+      summary: Выдача подарка
+      description: Выдает подарок.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/loginRequest'
+      responses:
+        '200':
+          description: Успешная выдача подарка. Выдает выдает подарок или сообщение о том что подарки уже были выданы.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/gameRdo'
+        '400':
+          description: Ошибка запроса. Некорректные данные для выдачи подарка.
         '401':
           description: Ошибка аутентификации.
 
